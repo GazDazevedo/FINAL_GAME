@@ -1,3 +1,6 @@
 #By Daniel Azevedo
 WIDTH = 1440
 HEIGHT = 900
+BLUE = 100,100,100
+BLACK = 200,10,200
+FPS = 30

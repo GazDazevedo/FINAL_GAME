@@ -6,6 +6,7 @@ import os
 from SETTING import *
 from sprites import *
 
+
 class Game:
     def __init__(self):
         # init game window etc.
@@ -17,21 +18,28 @@ class Game:
         self.running = True
         print(self.screen)
 
+    def load_data(self):
+        self.ranged_img = pg.image.load(path.join(img_folder, "bellar_man_single_frm.png")).convert()
+        self.leader_img = pg.image.load(path.join(img_folder, "bellar_man_single_frm.png")).convert()
+        self.savage_img = pg.image.load(path.join(img_folder, "bellar_man_single_frm.png")).convert()
+        self.builder_img = pg.image.load(path.join(img_folder, "bellar_man_single_frm.png")).convert()
+        self.resource = pg.image.load(path.join(img_folder, "bellar_man_single_frm.png")).convert()
+
     def new(self):
         # starting a new game
+        self.score = 0
         self.all_sprites = pg.sprite.Group()
-        self.wall = pg.sprite.Group()
-        self.bad = pg.sprite.Group()
-        self.good = pg.sprite.Group()
-        self.workers = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
+        self.ranged = pg.sprite.Group()
+        self.leader = pg.sprite.Group()
+        self.savage = pg.sprite.Group()
         self.building = pg.sprite.Group()
-        self.knights = pg.sprite.Group()
-        self.calvary = pg.sprite.Group()
-        self.spearmen = pg.sprite.Group()
-        self.gunmen = pg.sprite.Group()
-        self.turrent = pg.sprite.Group()
-        self.mud = pg.sprite.Group()
-        self.tank = pg.sprite.Group()
+        self.builder = pg.sprite.Group()
+        self.resource = pg.sprite.Group()
+        self.head = pg.sprite.Group()
+       
+        self.run()
 
     def draw(self):
          self.screen.fill(BLUE)
@@ -57,16 +65,18 @@ class Game:
             self.clock.tick(FPS)
             self.events()
             self.draw()
-
+                
+            
+    
     def update(self):
-        print()
-
+        self.all_sprites.update()
+            
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                if self.playing:
+                    self.playing = False
                 self.running = False
-
-
             
     
     
