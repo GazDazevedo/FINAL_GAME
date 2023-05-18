@@ -2,7 +2,7 @@
 import pygame as pg
 import os
 # import settings 
-from sprites import *
+
 # from pg.sprite import Sprite
 
 # set up assets folders
