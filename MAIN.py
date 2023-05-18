@@ -1,31 +1,37 @@
 #File created by Daniel Azevedo
 
+#sources
+#Pete Shinners
+
 # import libs
 from random import *
 import pygame as pg
 import os
 # import settings 
 from SETTING import *
-from sprites import *
 
-# from pg.sprite import Sprite
 
 # set up assets folders
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
-# create game class in order to pass properties to the sprites file
 '''
 Goals:
 
 Multiple Choices
 
-Images for events
-
 Multiple outcomes
+
+Multiple stats
+
+Different events
+
+randomized Events
+
+Reach: 
 
 Mini game
 
-Different events
+Images for events
 
 '''
 
@@ -48,6 +54,7 @@ class Game:
 
     def new(self):
         # starting a new game
+        #starting stats
         self.score = 0
         self.dead = False
         self.numchoices = 3
@@ -70,9 +77,10 @@ class Game:
         self.run()
         
     def comp_choice(self):
-        #Returns random value between 0 and 2
+        #Returns random value between 1 and 10
         return (randint(1,10))
     
+    #mil event chances
     def milchance(self):
         self.anti = (randint(1,10))
         if self.anti > (2 + self.military):
@@ -82,6 +90,7 @@ class Game:
             self.Outcome = 2
             #print(self.anti)
         
+        #text
     def draw_text(self, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -90,8 +99,7 @@ class Game:
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface, text_rect)
         
-
-
+        #visual
     def run(self):
         self.playing = True
         while self.playing:
@@ -99,9 +107,12 @@ class Game:
             self.events()
             self.draw()
             self.update()
-                            
+
+    #drawing             
     def draw(self):
+        #if not lost
         if self.dead == False:
+            #starting image
             self.screen.fill(DARKGREEN)
             King_image = pg.image.load(os.path.join(game_folder, 'king.jpg')).convert()
             King_image_rect = King_image.get_rect()
@@ -119,13 +130,16 @@ class Game:
             self.screen.blit(Textbox_image, Textbox_image_rect)
             self.screen.blit(Stats_image, Stats_image_rect)
             self.draw_text("Stability: " + str(self.stability), 40, BLACK, 1200, 500)
+            #failure
             if self.gold == 0 or self.courtopinion == 0 or self.stability == 0:
                  self.dead = True
                  print("neddjnjnqdnj")
+            #gets rid of court opinion
             if self.nocourt == False:
                 self.draw_text("Court: " + str(self.courtopinion), 40, BLACK, 1200, 600)
             self.draw_text("Gold: " + str(self.gold), 40, BLACK, 1200, 700)
             
+            #how many choices appear
             if self.numchoices >= 1:
                 Choices_image = pg.image.load(os.path.join(game_folder, 'Choices.jpg')).convert()
                 Choices_image_rect = Choices_image.get_rect()
@@ -144,6 +158,7 @@ class Game:
                         Choices3_image_rect.x = 400
                         Choices3_image_rect.y = 730
                         self.screen.blit(Choices3_image, Choices3_image_rect)
+            #the first 7 turns are pre determined
             if self.Turn == 1:
                 self.draw_text("You are the ruler of the Great Kingdom of Bellarmine", 40, BLACK, 800, 200)
                 self.draw_text("Great! Tell me about it would you?", 30, BLACK, 650, 450)
@@ -170,13 +185,16 @@ class Game:
                 self.draw_text("Queen: No cost, corrupt, good with money", 30, BLACK, 650, 450)
                 self.draw_text("The Marshall: Hight cost, good military, iron fist", 30, BLACK, 650, 600)
                 self.draw_text("Jeff: Everyone loves jeff the jeff", 30, BLACK, 650, 800)
+            #after 6, random events
             if self.Turn >= 7:
                 if self.hasvalue == False:
+                    #random event choosen, cant be same in a row
                     while (self.chance == self.prev_chance):
                         self.chance = self.comp_choice()
                     self.prev_chance = self.chance
                     print(str(self.chance) + " Here")
                     self.hasvalue = True
+                #the different events
                 if self.chance == 1:
                         self.draw_text("The Harvest has failed this month my Lord!", 30, BLACK, 800, 200)
                         self.draw_text("Send relief to the peasants!", 30, BLACK, 650, 450)
@@ -262,17 +280,18 @@ class Game:
                         self.draw_text("The intervention didn't go so well", 30, BLACK, 800, 200)
                         self.draw_text("Why?", 30, BLACK, 650, 450)
                         print("6")
+        #death screen
         elif self.dead == True:
             self.screen.fill(BLACK)
             self.draw_text("You failed", 60, BLUE, 650, 450)
             print("nefniefiw")
         else:   
             self.screen.fill(BLUE)
-            # is this a method or a function?
+        #displays
         pg.display.flip()  
 
     def events(self):
-
+            #quit
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 if self.playing:
@@ -285,6 +304,8 @@ class Game:
                     self.dead = False
                     g = Game()
                     g.new()
+                #making imput, choices of player
+                #setting effects of choices
             if event.type == pg.MOUSEBUTTONUP:
                 pg.mouse.get_pos
                 self.mouse_coords = pg.mouse.get_pos()
@@ -358,7 +379,7 @@ class Game:
                         self.Turn = 6
                     if (Choices3_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability - 50
+                        self.stability = self.stability - 80
                         self.nocourt = True
                         self.courtopinion = 1000
                         self.mouse_coords = 0,0
@@ -368,8 +389,8 @@ class Game:
                     if (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
                         self.money = 2
-                        self.courtopinion = self.courtopinion - 10
-                        self.stability = self.stability -5
+                        self.courtopinion = self.courtopinion - 15
+                        self.stability = self.stability -10
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = 7
@@ -383,14 +404,15 @@ class Game:
                         self.Turn = 7
                     if (Choices3_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability + 50
+                        self.stability = self.stability + 30
                         self.mouse_coords = 0,0
                         self.Turn = 7
+                #start of random events
                 if self.chance == 1:
                     if (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
                         self.gold = self.gold - 10
-                        self.stability = self.stability + 10
+                        self.stability = self.stability + 15
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
@@ -404,11 +426,12 @@ class Game:
                     if (Choices3_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
                         self.stability = self.stability + 10
-                        self.courtopinion = self.courtopinion - 15
+                        self.courtopinion = self.courtopinion - 20
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
                 if self.chance == 2:
+                    #this is a mil choice
                     if (Choices_image_rect.collidepoint(self.mouse_coords) == True and self.outset == False):
                         self.numchoices = 1
                         self.milchance()
@@ -425,20 +448,21 @@ class Game:
                             self.Outcome = 0
                     if (Choices2_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability - 15
+                        self.stability = self.stability - 20
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
                     if (Choices3_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability + 10
-                        self.gold = self.gold - 10
+                        self.stability = self.stability + 15
+                        self.gold = self.gold - 15
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
+                #possible mil chance outcomes and effects
                 if self.chance == 2 and self.Failure == True and (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                     self.numchoices = 3
-                    self.stability = self.stability - 10
+                    self.stability = self.stability - 15
                     self.courtopinion = self.courtopinion - 15
                     self.Outcome = 0
                     self.Failure = False
@@ -450,7 +474,7 @@ class Game:
                 if self.chance == 2 and self.Victory == True and (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                     self.numchoices = 3
                     self.stability = self.stability + 10
-                    self.courtopinion = self.courtopinion + 5
+                    self.courtopinion = self.courtopinion + 10
                     self.Outcome = 0
                     self.Failure = False
                     self.Victory = False
@@ -461,21 +485,21 @@ class Game:
                 if self.chance == 3:
                     if (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability + 5
+                        self.stability = self.stability + 10
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
                     if (Choices2_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.gold = self.gold - 5
+                        self.gold = self.gold - 10
                         self.courtopinion = self.courtopinion + 10
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
                     if (Choices3_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability - 15
-                        self.courtopinion = self.courtopinion - 15
+                        self.stability = self.stability - 10
+                        self.courtopinion = self.courtopinion - 20
                         self.gold = self.gold + 20
                         self.mouse_coords = 0,0
                         self.hasvalue = False
@@ -498,19 +522,19 @@ class Game:
                     if (Choices2_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
                         self.gold = self.gold - 5
-                        self.stability = self.stability + 10
+                        self.stability = self.stability + 15
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
                     if (Choices3_image_rect.collidepoint(self.mouse_coords) == True):
                         self.numchoices = 3
-                        self.stability = self.stability - 10
+                        self.stability = self.stability - 15
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
                 if self.chance == 4 and self.Failure == True and (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                     self.numchoices = 3
-                    self.stability = self.stability - 10
+                    self.stability = self.stability - 15
                     self.courtopinion = self.courtopinion - 5
                     self.Outcome = 0
                     self.Failure = False
@@ -521,7 +545,7 @@ class Game:
                     self.Turn = self.Turn + 1
                 if self.chance == 4 and self.Victory == True and (Choices_image_rect.collidepoint(self.mouse_coords) == True):
                     self.numchoices = 3
-                    self.stability = self.stability + 10
+                    self.stability = self.stability + 15
                     self.courtopinion = self.courtopinion + 10
                     self.Outcome = 0
                     self.Failure = False
@@ -681,6 +705,7 @@ class Game:
                         self.mouse_coords = 0,0
                         self.hasvalue = False
                         self.Turn = self.Turn + 1
+    #constantly updating
     def update(self):
         self.draw()
 
