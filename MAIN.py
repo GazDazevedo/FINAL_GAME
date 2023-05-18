@@ -119,6 +119,9 @@ class Game:
             self.screen.blit(Textbox_image, Textbox_image_rect)
             self.screen.blit(Stats_image, Stats_image_rect)
             self.draw_text("Stability: " + str(self.stability), 40, BLACK, 1200, 500)
+            if self.gold == 0 or self.courtopinion == 0 or self.stability == 0:
+                 self.dead = True
+                 print("neddjnjnqdnj")
             if self.nocourt == False:
                 self.draw_text("Court: " + str(self.courtopinion), 40, BLACK, 1200, 600)
             self.draw_text("Gold: " + str(self.gold), 40, BLACK, 1200, 700)
@@ -167,7 +170,7 @@ class Game:
                 self.draw_text("Queen: No cost, corrupt, good with money", 30, BLACK, 650, 450)
                 self.draw_text("The Marshall: Hight cost, good military, iron fist", 30, BLACK, 650, 600)
                 self.draw_text("Jeff: Everyone loves jeff the jeff", 30, BLACK, 650, 800)
-            if self.Turn >= 7 and self.Turn < 13:
+            if self.Turn >= 7:
                 if self.hasvalue == False:
                     while (self.chance == self.prev_chance):
                         self.chance = self.comp_choice()
@@ -259,6 +262,10 @@ class Game:
                         self.draw_text("The intervention didn't go so well", 30, BLACK, 800, 200)
                         self.draw_text("Why?", 30, BLACK, 650, 450)
                         print("6")
+        elif self.dead == True:
+            self.screen.fill(BLACK)
+            self.draw_text("You failed", 60, BLUE, 650, 450)
+            print("nefniefiw")
         else:   
             self.screen.fill(BLUE)
             # is this a method or a function?
